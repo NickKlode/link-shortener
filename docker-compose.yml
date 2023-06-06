@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./
+    command: ./ozontest -store postgres
+    ports: 
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_CONN=postgres://postgres:ZAQzaqzaq97@db:5432/postgres?sslmode=disable
+
+
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_CONN=postgres://postgres:ZAQzaqzaq97@db:5432/postgres?sslmode=disable
+    ports:
+      - 5434:5432

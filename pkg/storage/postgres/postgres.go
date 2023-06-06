@@ -1,0 +1,64 @@
+package postgres
+
+import (
+	"context"
+
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/nickklode/ozon-urlshortener/pkg/generator"
+	"github.com/nickklode/ozon-urlshortener/pkg/validator"
+)
+
+type DB struct {
+	pool *pgxpool.Pool
+}
+
+type Links struct {
+	OriginalUrl string `json:"original_url"`
+	Token       string `json:"token"`
+}
+
+func New(p string) (*DB, error) {
+
+	c, err := pgxpool.Connect(context.Background(), p)
+	if err != nil {
+		return nil, err
+	}
+
+	s := DB{
+		pool: c,
+	}
+
+	return &s, nil
+}
+
+func (db *DB) CreateToken(orig string) (string, error) {
+	err := validator.ValidateURL(orig)
+	if err != nil {
+		return "", err
+	}
+	token := generator.GenerateToken()
+
+	query := "INSERT INTO links(original_url, token) VALUES ($1, $2) RETURNING token"
+	err = db.pool.QueryRow(context.Background(), query, orig, token).Scan(&token)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+
+}
+
+func (db *DB) GetByToken(token string) (string, error) {
+	err := validator.ValidateToken(token)
+	if err != nil {
+		return "", err
+	}
+	var original string
+	query := "SELECT original_url FROM links WHERE token = $1"
+	err = db.pool.QueryRow(context.Background(), query, token).Scan(&original)
+	if err != nil {
+		return "", err
+	}
+
+	return original, nil
+}
