@@ -2,21 +2,17 @@ package inmemory
 
 import (
 	"github.com/jackc/pgx/v4"
-	"github.com/nickklode/ozon-urlshortener/pkg/generator"
-	"github.com/nickklode/ozon-urlshortener/pkg/validator"
+	"github.com/nickklode/ozon-urlshortener/internal/service/generator"
+	"github.com/nickklode/ozon-urlshortener/internal/service/validator"
+	"github.com/nickklode/ozon-urlshortener/internal/storage"
 )
 
-type Links struct {
-	OriginalUrl string `json:"original_url"`
-	Token       string `json:"token"`
-}
-
 type Store struct {
-	m map[string]Links
+	m map[string]storage.Links
 }
 
 func New() *Store {
-	return &Store{m: map[string]Links{}}
+	return &Store{m: map[string]storage.Links{}}
 }
 
 func (s *Store) CreateToken(orig string) (string, error) {
@@ -28,7 +24,7 @@ func (s *Store) CreateToken(orig string) (string, error) {
 	if ok {
 		return sur.Token, nil
 	}
-	sur = Links{OriginalUrl: orig, Token: generator.GenerateToken()}
+	sur = storage.Links{OriginalUrl: orig, Token: generator.GenerateToken()}
 	s.m[orig] = sur
 	return sur.Token, nil
 }

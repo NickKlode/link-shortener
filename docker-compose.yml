@@ -1,23 +1,40 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  web:
+  ozontest:
     build: ./
-    command: ./ozontest -store postgres
+
+    command: ./wait-for-postgres.sh db ./ozontest postgres
     ports: 
       - 8080:8080
+    container_name: ozontest
+    environment:
+      POSTGRES_PASSWORD: ZAQzaqzaq97
     depends_on:
       - db
-    environment:
-      - POSTGRES_CONN=postgres://postgres:ZAQzaqzaq97@db:5432/postgres?sslmode=disable
+   
+    
+    
 
 
   db:
-    restart: always
+
     image: postgres:latest
-    volumes:
-      - ./.database/postgres/data:/var/lib/postgresql/data
+    restart: always
     environment:
-      - POSTGRES_CONN=postgres://postgres:ZAQzaqzaq97@db:5432/postgres?sslmode=disable
+      POSTGRES_PASSWORD: ZAQzaqzaq97
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+     
+
+      
     ports:
-      - 5434:5432
+      - "5432:5432"
+    volumes: 
+      - ./.dbdata/postgres/data:/var/lib/postgresql/data
+
+  
+  
+
+
+

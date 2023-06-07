@@ -5,24 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/nickklode/ozon-urlshortener/pkg/storage"
-	"github.com/nickklode/ozon-urlshortener/pkg/storage/postgres"
+	"github.com/nickklode/ozon-urlshortener/internal/storage"
 )
-
-type API struct {
-	db storage.StorageInterface
-	r  *mux.Router
-}
-
-func New(db storage.StorageInterface) *API {
-	a := API{db: db, r: mux.NewRouter()}
-	a.endpoints()
-	return &a
-}
-
-func (api *API) Router() *mux.Router {
-	return api.r
-}
 
 func (api *API) endpoints() {
 	api.r.HandleFunc("/", api.createToken).Methods("POST")
@@ -31,7 +15,7 @@ func (api *API) endpoints() {
 
 func (api *API) createToken(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var newLink postgres.Links
+	var newLink storage.Links
 
 	json.NewDecoder(r.Body).Decode(&newLink)
 	st, err := api.db.CreateToken(newLink.OriginalUrl)

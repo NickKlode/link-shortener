@@ -4,17 +4,13 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/nickklode/ozon-urlshortener/pkg/generator"
-	"github.com/nickklode/ozon-urlshortener/pkg/validator"
+	"github.com/nickklode/ozon-urlshortener/internal/service/generator"
+	"github.com/nickklode/ozon-urlshortener/internal/service/validator"
+	"github.com/nickklode/ozon-urlshortener/internal/storage"
 )
 
 type DB struct {
 	pool *pgxpool.Pool
-}
-
-type Links struct {
-	OriginalUrl string `json:"original_url"`
-	Token       string `json:"token"`
 }
 
 func New(p string) (*DB, error) {
@@ -38,7 +34,7 @@ func (db *DB) CreateToken(orig string) (string, error) {
 	}
 	token := generator.GenerateToken()
 
-	query := "INSERT INTO links(original_url, token) VALUES ($1, $2) RETURNING token"
+	query := "INSERT INTO links(original_url, token) VALUES ($1, $2) ON CONFLICT (original_url) DO NOTHING RETURNING token"
 	err = db.pool.QueryRow(context.Background(), query, orig, token).Scan(&token)
 	if err != nil {
 		return "", err
@@ -53,12 +49,12 @@ func (db *DB) GetByToken(token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var original string
+	var original storage.Links
 	query := "SELECT original_url FROM links WHERE token = $1"
 	err = db.pool.QueryRow(context.Background(), query, token).Scan(&original)
 	if err != nil {
 		return "", err
 	}
 
-	return original, nil
+	return original.OriginalUrl, nil
 }
