@@ -1,10 +1,9 @@
 package inmemory
 
 import (
-	"github.com/jackc/pgx/v4"
-	"github.com/nickklode/ozon-urlshortener/internal/service/generator"
-	"github.com/nickklode/ozon-urlshortener/internal/service/validator"
 	"github.com/nickklode/ozon-urlshortener/internal/storage"
+	"github.com/nickklode/ozon-urlshortener/internal/utils/generator"
+	"github.com/nickklode/ozon-urlshortener/internal/utils/validator"
 )
 
 type Store struct {
@@ -39,5 +38,5 @@ func (s *Store) GetByToken(token string) (string, error) {
 			return sur.OriginalUrl, nil
 		}
 	}
-	return "", pgx.ErrNoRows
+	return "", err
 }

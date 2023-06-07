@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/nickklode/ozon-urlshortener/internal/service/generator"
-	"github.com/nickklode/ozon-urlshortener/internal/service/validator"
-	"github.com/nickklode/ozon-urlshortener/internal/storage"
+	"github.com/nickklode/ozon-urlshortener/internal/utils/generator"
+	"github.com/nickklode/ozon-urlshortener/internal/utils/validator"
 )
 
 type DB struct {
@@ -49,12 +48,12 @@ func (db *DB) GetByToken(token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var original storage.Links
+	var original string
 	query := "SELECT original_url FROM links WHERE token = $1"
 	err = db.pool.QueryRow(context.Background(), query, token).Scan(&original)
 	if err != nil {
 		return "", err
 	}
 
-	return original.OriginalUrl, nil
+	return original, nil
 }

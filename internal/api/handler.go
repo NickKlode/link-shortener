@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -17,13 +18,16 @@ func (api *API) createToken(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var newLink storage.Links
 
-	json.NewDecoder(r.Body).Decode(&newLink)
+	err := json.NewDecoder(r.Body).Decode(&newLink)
+	if err != nil {
+		log.Printf("unnable to decode the reques body. %v", err)
+	}
 	st, err := api.db.CreateToken(newLink.OriginalUrl)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		log.Printf("unnable to create token. %v", err)
 	}
-	json.NewEncoder(w).Encode(st)
+
+	json.NewEncoder(w).Encode(map[string]string{"token": st})
 
 }
 
@@ -34,8 +38,7 @@ func (api *API) getOriginal(w http.ResponseWriter, r *http.Request) {
 	st, err := api.db.GetByToken(s)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		log.Printf("unnable to get by token. %v", err)
 	}
-	json.NewEncoder(w).Encode(st)
+	json.NewEncoder(w).Encode(map[string]string{"original_url": st})
 }
