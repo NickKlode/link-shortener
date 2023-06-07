@@ -12,6 +12,6 @@
 
 Пример:
 POST запрос для получения короткой ссылки.
-<img width="625" alt="Снимок экрана 2023-06-07 в 22 28 46" src="https://github.com/NickKlode/ozon-urlshortener/assets/83373008/81784161-1906-42e9-b97b-c5c3466e7297">
+<img width="400" alt="Снимок экрана 2023-06-07 в 22 28 46" src="https://github.com/NickKlode/ozon-urlshortener/assets/83373008/81784161-1906-42e9-b97b-c5c3466e7297">
 GET запрос для получения оригинального url.
-<img width="616" alt="Снимок экрана 2023-06-07 в 22 29 12" src="https://github.com/NickKlode/ozon-urlshortener/assets/83373008/b2d11d16-7c01-4dbf-be60-1fb11e358f24">
+<img width="400" alt="Снимок экрана 2023-06-07 в 22 29 12" src="https://github.com/NickKlode/ozon-urlshortener/assets/83373008/b2d11d16-7c01-4dbf-be60-1fb11e358f24">
