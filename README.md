@@ -9,7 +9,7 @@
 1. в docker-compose.yml "command: ./wait-for-postgres.sh db ./ozontest postgres"
 2. make build
 3. make run
-4. make migration
+4. make migrate
 
 Пример:
 POST запрос для получения короткой ссылки.
