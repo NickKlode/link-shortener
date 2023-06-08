@@ -31,5 +31,5 @@ POST запрос для получения короткой ссылки.
 
 GET запрос для получения оригинального url.
 
-Запрос: curl --request GET 'localhost:8080/goqBXLIdgI' --header 'Content-Type: application/json'
-Ответ: {"original_url":"https://vk.com"}
+Запрос: curl --request GET 'localhost:8080/UEoisMGRaz' --header 'Content-Type: application/json'
+Ответ: {"original_url":"https://y.ru"}
