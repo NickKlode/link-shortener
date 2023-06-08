@@ -27,9 +27,13 @@ GET запрос для получения оригинального url.
 POST запрос для получения короткой ссылки.
 
 Запрос: curl --request POST 'localhost:8080/' --header 'Content-Type: application/json' -d '{"original_url": "https://y.ru"}'
+
+
 Ответ: {"token":"UEoisMGRaz"}
 
 GET запрос для получения оригинального url.
 
 Запрос: curl --request GET 'localhost:8080/UEoisMGRaz' --header 'Content-Type: application/json'
+
+
 Ответ: {"original_url":"https://y.ru"}
