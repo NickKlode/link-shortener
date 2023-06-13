@@ -5,7 +5,6 @@ import (
 
 	"github.com/nickklode/ozon-urlshortener/internal/storage"
 	"github.com/nickklode/ozon-urlshortener/internal/utils/generator"
-	"github.com/nickklode/ozon-urlshortener/internal/utils/validator"
 )
 
 type Store struct {
@@ -20,10 +19,7 @@ func New() *Store {
 func (s *Store) CreateToken(orig string) (string, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	err := validator.ValidateURL(orig)
-	if err != nil {
-		return "", err
-	}
+
 	sur, ok := s.m[orig]
 	if ok {
 		return sur.Token, nil
@@ -36,10 +32,7 @@ func (s *Store) CreateToken(orig string) (string, error) {
 }
 
 func (s *Store) GetByToken(token string) (string, error) {
-	err := validator.ValidateToken(token)
-	if err != nil {
-		return "", err
-	}
+	var err error
 	for _, sur := range s.m {
 		if sur.Token == token {
 			return sur.OriginalUrl, nil

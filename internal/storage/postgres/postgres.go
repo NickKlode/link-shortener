@@ -6,7 +6,6 @@ import (
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickklode/ozon-urlshortener/internal/utils/generator"
-	"github.com/nickklode/ozon-urlshortener/internal/utils/validator"
 )
 
 type Config struct {
@@ -38,14 +37,11 @@ func New(cfg Config) (*DB, error) {
 }
 
 func (db *DB) CreateToken(orig string) (string, error) {
-	err := validator.ValidateURL(orig)
-	if err != nil {
-		return "", err
-	}
+
 	token := generator.GenerateToken()
 
 	query := "INSERT INTO links(original_url, token) VALUES ($1, $2) ON CONFLICT (original_url) DO NOTHING RETURNING token"
-	err = db.pool.QueryRow(context.Background(), query, orig, token).Scan(&token)
+	err := db.pool.QueryRow(context.Background(), query, orig, token).Scan(&token)
 	if err != nil {
 		return "", err
 	}
@@ -55,13 +51,10 @@ func (db *DB) CreateToken(orig string) (string, error) {
 }
 
 func (db *DB) GetByToken(token string) (string, error) {
-	err := validator.ValidateToken(token)
-	if err != nil {
-		return "", err
-	}
+
 	var original string
 	query := "SELECT original_url FROM links WHERE token = $1"
-	err = db.pool.QueryRow(context.Background(), query, token).Scan(&original)
+	err := db.pool.QueryRow(context.Background(), query, token).Scan(&original)
 	if err != nil {
 		return "", err
 	}

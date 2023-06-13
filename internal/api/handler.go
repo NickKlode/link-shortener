@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/nickklode/ozon-urlshortener/internal/storage"
+	"github.com/nickklode/ozon-urlshortener/internal/utils/validator"
 )
 
 func (api *API) endpoints() {
@@ -22,6 +23,11 @@ func (api *API) createToken(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("unnable to decode the reques body. %v", err)
 	}
+	err = validator.ValidateURL(newLink.OriginalUrl)
+	if err != nil {
+		log.Printf("wrong url. %s", err)
+		return
+	}
 	st, err := api.db.CreateToken(newLink.OriginalUrl)
 	if err != nil {
 		log.Printf("unnable to create token. %v", err)
@@ -34,6 +40,11 @@ func (api *API) createToken(w http.ResponseWriter, r *http.Request) {
 func (api *API) getOriginal(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	s := mux.Vars(r)["id"]
+	err := validator.ValidateToken(s)
+	if err != nil {
+		log.Printf("wrong token. %s", err)
+		return
+	}
 
 	st, err := api.db.GetByToken(s)
 
