@@ -2,19 +2,30 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/nickklode/ozon-urlshortener/internal/utils/generator"
 	"github.com/nickklode/ozon-urlshortener/internal/utils/validator"
 )
 
+type Config struct {
+	Host     string
+	Port     string
+	Username string
+	Password string
+	DBName   string
+	SSLMode  string
+}
+
 type DB struct {
 	pool *pgxpool.Pool
 }
 
-func New(p string) (*DB, error) {
+func New(cfg Config) (*DB, error) {
 
-	c, err := pgxpool.Connect(context.Background(), p)
+	c, err := pgxpool.Connect(context.Background(), fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=%s",
+		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName, cfg.SSLMode))
 	if err != nil {
 		return nil, err
 	}

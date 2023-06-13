@@ -5,6 +5,7 @@ services:
     build: ./
 
     command: ./wait-for-postgres.sh db ./ozontest postgres
+    
     ports: 
       - 8080:8080
     container_name: ozontest
