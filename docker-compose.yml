@@ -4,7 +4,7 @@ services:
   ozontest:
     build: ./
 
-    command: ./wait-for-postgres.sh db ./ozontest postgres
+    command: ./wait-for-postgres.sh db ./ozontest inmemory
     
     ports: 
       - 8080:8080
