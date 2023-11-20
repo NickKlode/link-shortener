@@ -1,4 +1,4 @@
-Тестовое задание OZON | Сервис для сокращения ссылок
+Сервис для сокращения ссылок
 
 Запуск in-memory:
 1. в docker-compose.yml "command: ./wait-for-postgres.sh db ./ozontest inmemory"
